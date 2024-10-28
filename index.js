@@ -6,12 +6,14 @@ const allSquares =  document.querySelectorAll(".square")
 console.log(allSquares);
 
 class Card {
-    constructor(value, elemento){
+    constructor(value, element){
         this.value = value
-        this.emelento = elemento
+        this.element = element
     }
 }
 
+
+//generacion de numeros aleatorios
 let values = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
 
 let cards = [];
@@ -24,9 +26,10 @@ allSquares.forEach((ditto)=>{
     cards.push(new Card(randomValue, ditto));
     values.splice(randomIndex, 1)
 
-    
+
 })
 console.log(cards);
+
 
 //apuntando a documento HTML
 
@@ -35,7 +38,7 @@ let showMatches = document.getElementById('aciertos');
 let showTime = document.getElementById('t-restante');
 
 
-//funcion principal 
+//declaracion de variables
 
 let timer = false;
 let flippedCards = 0;
@@ -44,11 +47,43 @@ let card2 = null;
 let secondResult = null;
 let firstResult = null;
 let moves = 0;
+let aciertos = 0;
+let counter = 30;
+let timeDown = null;
+
+
+//funcnion contador de tiempo
+
+function contarTiempo(){
+    timeDown = setInterval(()=>{
+counter--;
+showTime.innerHTML = `Tiempo: ${counter} segundos`;
+  if(counter == 0){
+   clearInterval(timeDown);
+   blockcards();
+  }
+ },1000);
+}
+
+function blockcards(){
+    for(let i = 0; i <= 15; i++){
+        let blockedcards = document.getElementById(i);
+        blockcards.innerHTML = values[i]
+        blockcards.disabled = true;
+    }
+}
+
+
+
+
+
+//funcion principal 
 
 function reveal(id){
     if( timer == false){
+     contarTiempo();
     timer = true;
-}
+ }
     flippedCards++;
 
     if(flippedCards == 1){
@@ -72,22 +107,35 @@ function reveal(id){
 
         card2.disabled = true;
 
+
         //incrementar movimientos
 
         moves++;
-
-        showMoves.innerHTML = `moves: ${moves}`;
+        showMoves.innerHTML = `Movimientos: ${moves}`;
 
 
 
         if(firstResult == secondResult){
-            flippedCards = 0;
-        }else {flippedCards = 0};
-        
-        //incrementar aciertos
+         flippedCards = 0;
+         
+         //incrementar aciertos
+         
+         aciertos++;
+         showMatches.innerHTML = `Aciertos: ${aciertos}`;
 
-        
+         if(aciertos == 8){
+            showMatches.innerHTML = `Aciertos: ${aciertos} 😎`;
+            showMoves.innerHTML = `Movimientos: ${moves} 🐾`;
 
-    
+         }
+         }else {
+            setTimeout(()=>{
+                card1.innerHTML = ' ';
+                card2.innerHTML = ' ';
+                card1.disabled = false;
+                card2.disabled = false;
+                flippedCards = 0;
+            },500);
+        }
     }
 }
